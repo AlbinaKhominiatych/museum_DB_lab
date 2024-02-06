@@ -46,5 +46,5 @@ class MuseumApp:
             if exhibit.get('category') == category:
                 filtered_exhibits.append(exhibit)
 
-        # Return the list of exhibits filtered by category
+        # Return the list of exhibits filtered by category as a JSON string
         return json.dumps(filtered_exhibits, ensure_ascii=False)
