@@ -24,7 +24,9 @@ class MuseumApp:
 
     def view_all_exhibits(self):
         # Логіка перегляду всіх експонатів
-        ...
+        all_exhibits = self.redis.hgetall('exhibits')
+        for key, value in all_exhibits.items():
+            print(f"{key}: {value}")
 
     def view_related_people(self, exhibit_id):
         # Логіка перегляду людей, пов'язаних з експонатом
