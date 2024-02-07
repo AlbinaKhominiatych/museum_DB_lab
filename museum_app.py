@@ -2,6 +2,7 @@ import redis
 import json
 import datetime
 
+
 class MuseumApp:
     def __init__(self, redis_host='localhost', redis_port=6379, redis_db=2):
         self.redis = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db, decode_responses=True)
@@ -27,8 +28,15 @@ class MuseumApp:
         ...
 
     def view_related_people(self, exhibit_id):
-        # Логіка перегляду людей, пов'язаних з експонатом
-        ...
+        from modules.vitalii.People import PeopleFacade
+
+        facade = PeopleFacade()
+
+        # Get from redis people who are connected to exhibit_id. Now it is an example
+        facade.add_person('Vova')
+        facade.add_person('Kolya')
+
+        print(facade.get_people_names())
 
     def view_related_exhibits(self, person_name):
         # Логіка перегляду експонатів, пов'язаних з людиною
