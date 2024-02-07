@@ -11,8 +11,16 @@ class MuseumApp:
         ...
 
     def delete_exhibit(self, exhibit_id):
-        # Логіка видалення експонату
-        ...
+        exhibit_key = f'exhibit:{exhibit_id}'
+        self.redis.delete(exhibit_key)
+
+        # Отримання ключів осіб зі множини з Redis
+        related_people_keys = self.redis.smembers(f'{exhibit_key}:related_people')
+        # Проходимось по ключах
+        for person_key in related_people_keys:
+            self.redis.srem(f'{person_key}:related_exhibits', exhibit_key)
+
+        print("Експонат успішно видалений.")
 
     def edit_exhibit(self, exhibit_id, new_data):
         # Логіка редагування експонату
