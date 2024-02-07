@@ -81,5 +81,16 @@ class MuseumApp:
         ...
 
     def view_exhibits_by_category(self, category):
-        # Логіка перегляду експонатів за категорією
-        ...
+        # Get a list of all exhibit keys
+        exhibit_keys = self.redis.keys('exhibit:*')
+        filtered_exhibits = []
+
+        for key in exhibit_keys:
+            # For each key, get the hash representing the exhibit
+            exhibit = self.redis.hgetall(key)
+            # Check if the exhibit's category matches the given category
+            if exhibit.get('category') == category:
+                filtered_exhibits.append(exhibit)
+
+        # Return the list of exhibits filtered by category as a JSON string
+        return json.dumps(filtered_exhibits, ensure_ascii=False)
