@@ -25,7 +25,29 @@ class MuseumApp:
 
     def edit_exhibit(self, exhibit_id, new_data):
         # Логіка редагування експонату
-        ...
+        if not self.redis.hexists('exhibits', exhibit_id):
+            print("Експонат не знайдено.")
+            return
+        stored_data = self.redis.hget('exhibits', exhibit_id)
+        # Переконуємось, що збережені дані не є пустими та можуть бути декодовані як JSON
+        if stored_data:
+            try:
+                exhibit_data = json.loads(stored_data)
+            except json.JSONDecodeError:
+                print("Помилка декодування даних експонату.")
+                return
+        else:
+            print("Дані експонату відсутні або пошкоджені.")
+            return
+
+        # Оновлюємо дані експонату новими значеннями
+        for key, value in new_data.items():
+            if value:  # Переконуємось, що значення не є пустим перед оновленням
+                exhibit_data[key] = value
+
+        # Зберігаємо оновлені дані назад у Redis
+        self.redis.hset('exhibits', exhibit_id, json.dumps(exhibit_data))
+        print("Інформація про експонат оновлена.")
 
     def view_exhibit_info(self, exhibit_id):
         # Логіка перегляду інформації про експонат
